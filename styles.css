@@ -109,6 +109,101 @@ html, body {
   outline-offset: -3px;
 }
 
+/* ── COLLAPSIBLE NAV GROUPS ── */
+.nav-parent {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-arrow {
+  font-size: 0.6rem;
+  opacity: 0.6;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.nav-parent.open .nav-arrow,
+.nav-subparent.open .nav-arrow {
+  transform: rotate(180deg);
+}
+
+.nav-sub {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.nav-sub.open {
+  max-height: 700px;
+}
+
+.nav-sub > a {
+  padding: 8px 22px 8px 38px !important;
+  font-size: 0.72rem !important;
+  color: #8ab0cc !important;
+}
+
+.nav-sub > a:hover { color: var(--nav-active) !important; }
+
+.nav-sub > a.active {
+  color: var(--nav-active) !important;
+  font-weight: bold;
+  border-right-color: var(--blue) !important;
+  background: rgba(74, 143, 212, 0.14);
+}
+
+/* 5.2 sub-group */
+.nav-subparent {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 22px 8px 38px !important;
+  font-size: 0.72rem !important;
+  color: #8ab0cc !important;
+  cursor: pointer;
+  user-select: none;
+  border-right: 3px solid transparent;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-subparent:hover { color: var(--nav-active) !important; background: rgba(74, 143, 212, 0.08); }
+
+.nav-subsub {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.nav-subsub.open { max-height: 400px; }
+
+.nav-subsub a {
+  padding: 7px 22px 7px 52px !important;
+  font-size: 0.70rem !important;
+  color: #7aa0bc !important;
+}
+
+.nav-subsub a:hover { color: var(--nav-active) !important; }
+
+.nav-subsub a.active {
+  color: var(--nav-active) !important;
+  font-weight: bold;
+  border-right-color: var(--blue) !important;
+  background: rgba(74, 143, 212, 0.14);
+}
+
+/* External link indicator */
+.nav-external::after {
+  content: ' ↗';
+  font-size: 0.65rem;
+  opacity: 0.6;
+}
+
 /* Mobile toggle — hidden on desktop */
 .menu-toggle {
   display: none;

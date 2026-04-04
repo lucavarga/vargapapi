@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vargapapi — Voltam, lettem</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="logo">Vargapapi</div>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" onclick="toggleMobileMenu(this)">
+      <span>Menu</span>
+      <span class="toggle-icon">&#9660;</span>
+    </button>
+    <nav id="main-nav" aria-label="Main navigation">
+      <div class="nav-group">
+        <a class="nav-parent" onclick="toggleGroup(this)">CV – Életrajz<span class="nav-arrow">&#9660;</span></a>
+        <div class="nav-sub">
+          <a href="cv-mert-ne.html">1.1 Mért ne?! Mottó</a>
+          <a href="cv-voltam-lettem.html" class="active" aria-current="page">1.2 Voltam, lettem</a>
+          <a href="cv-melleny-zako.html">1.3 Mellény, zakó, egyebek</a>
+          <a href="cv-mostanaban.html">1.4 Mostanában</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a class="nav-parent" onclick="toggleGroup(this)">Idevalósi vagyok<span class="nav-arrow">&#9660;</span></a>
+        <div class="nav-sub">
+          <a href="idevalosi-kisujszallas.html">2.1 Kisújszállás Gönczy Sándortól</a>
+          <a href="idevalosi-csaladom.html">2.2 Családom</a>
+          <a href="idevalosi-barataim.html">2.3 Barátaim</a>
+        </div>
+      </div>
+      <a class="nav-external" href="https://photos.google.com/share/AF1QipOX7nmchB8nc9YVNkqxiYNwzWTgtWADA4_l8y9Svheg9Xd2G8jM9fm2ZBe8p5ZCvw?key=b3lXUEM5aW9pRWpLSHpqTlotNnVBUHdGT1VRUC13" target="_blank" rel="noopener">Tanári pályám emlékezete</a>
+      <a class="nav-external" href="https://atlaszblog.blog.hu/" target="_blank" rel="noopener">Blog Atlasz</a>
+      <div class="nav-group">
+        <a class="nav-parent" onclick="toggleGroup(this)">Nyomtatásban<span class="nav-arrow">&#9660;</span></a>
+        <div class="nav-sub">
+          <a href="nyomtatasban-bibliografia.html">5.1 Bibliográfia</a>
+          <div class="nav-subgroup">
+            <a class="nav-subparent" onclick="toggleSubGroup(this)">5.2 Olvasható, hivatkozással használható<span class="nav-arrow">&#9660;</span></a>
+            <div class="nav-subsub">
+              <a href="zsido-magyarok.html">5.2.1 Zsidó magyarok Szegeden</a>
+              <a href="katedral-karcolatok.html">5.2.2 Katedrális karcolatok</a>
+              <a href="babilon-folyoi.html">5.2.3 Babilon folyói mellől</a>
+              <a href="os-uj-templom.html">5.2.4 Ős-új templom Szegeden</a>
+              <a href="torott-ablakok.html">5.2.5 Törött ablakok</a>
+              <a href="jo-szelvel.html">5.2.6 Jó széllel a parttalan felé</a>
+              <a href="orok-remenyeg.html">5.2.7 Az örök reménység temploma</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a class="nav-parent" onclick="toggleGroup(this)">Szeretem<span class="nav-arrow">&#9660;</span></a>
+        <div class="nav-sub">
+          <a href="szeretem-lux-antal.html">6.1 Lux Antal ajándéka</a>
+          <a href="szeretem-zenek.html">6.2 Zenék</a>
+        </div>
+      </div>
+      <a href="fenykepek.html">Fényképek</a>
+      <a href="kapcsolat.html">Kapcsolat</a>
+    </nav>
+  </aside>
+
+  <div class="content-area">
+    <div class="topbar">
+      <p class="breadcrumb">Kezdőoldal &rsaquo; CV – Életrajz &rsaquo; <span>Voltam, lettem</span></p>
+    </div>
+    <main class="article" id="main-content">
+      <h1 class="page-title">Voltam, lettem</h1>
+      <div class="title-rule"></div>
+      <p>Ez az oldal tartalma hamarosan elérhető lesz.</p>
+    </main>
+    <footer class="page-footer">
+      <div class="footer-left">
+        <strong>vargapapi.hu</strong>
+        All rights reserved &copy; 2026 &nbsp;&middot;&nbsp; Built with intention
+      </div>
+      <div class="footer-right">
+        <a href="kapcsolat.html">Kapcsolat</a>
+      </div>
+    </footer>
+  </div>
+
+</div>
+<script>
+  function toggleMobileMenu(btn) {
+    var nav = document.getElementById('main-nav');
+    var isOpen = nav.classList.contains('open');
+    nav.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+  function toggleGroup(el) {
+    var sub = el.nextElementSibling;
+    var isOpen = sub.classList.contains('open');
+    document.querySelectorAll('.nav-sub.open').forEach(function(s) {
+      s.classList.remove('open');
+      s.previousElementSibling.classList.remove('open');
+    });
+    if (!isOpen) { sub.classList.add('open'); el.classList.add('open'); }
+  }
+  function toggleSubGroup(el) {
+    var sub = el.nextElementSibling;
+    sub.classList.toggle('open');
+    el.classList.toggle('open');
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var active = document.querySelector('a.active');
+    if (!active) return;
+    var sub = active.closest('.nav-sub');
+    if (sub) { sub.classList.add('open'); sub.previousElementSibling.classList.add('open'); }
+    var subsub = active.closest('.nav-subsub');
+    if (subsub) {
+      subsub.classList.add('open');
+      subsub.previousElementSibling.classList.add('open');
+      var parentSub = subsub.closest('.nav-sub');
+      if (parentSub) { parentSub.classList.add('open'); parentSub.previousElementSibling.classList.add('open'); }
+    }
+  });
+</script>
+</body>
+</html>
