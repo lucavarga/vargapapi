@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vargapapi — Babilon folyói mellől a Tisza partjáig</title>
+  <title>Vargapapi — Tanári pályám emlékezete</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,7 +33,7 @@
           <a href="idevalosi-barataim.html">2.3 Barátaim</a>
         </div>
       </div>
-      <a href="tanari-palya.html">Tanári pályám emlékezete</a>
+      <a href="tanari-palya.html" class="active" aria-current="page">Tanári pályám emlékezete</a>
       <a class="nav-external" href="https://atlaszblog.blog.hu/" target="_blank" rel="noopener">Blog Atlasz</a>
       <div class="nav-group">
         <a class="nav-parent" onclick="toggleGroup(this)">Nyomtatásban<span class="nav-arrow">&#9660;</span></a>
@@ -44,7 +44,7 @@
             <div class="nav-subsub">
               <a class="nav-external" href="https://mek.oszk.hu/19500/19576/" target="_blank" rel="noopener">5.2.1 Zsidó magyarok Szegeden</a>
               <a class="nav-external" href="https://mek.oszk.hu/22600/22681/" target="_blank" rel="noopener">5.2.2 Katedrális karcolatok</a>
-              <a href="babilon-folyoi.html" class="active" aria-current="page">5.2.3 Babilon folyói mellől</a>
+              <a class="nav-external" href="https://mek.oszk.hu/19500/19575/" target="_blank" rel="noopener">5.2.3 Babilon folyói mellől</a>
               <a class="nav-external" href="https://mek.oszk.hu/19600/19675/" target="_blank" rel="noopener">5.2.4 Ős-új templom Szegeden</a>
               <a class="nav-external" href="https://mek.oszk.hu/22600/22680/" target="_blank" rel="noopener">5.2.5 Törött ablakok</a>
               <a class="nav-external" href="https://mek.oszk.hu/22800/22846/" target="_blank" rel="noopener">5.2.6 Jó széllel a parttalan felé</a>
@@ -67,12 +67,18 @@
 
   <div class="content-area">
     <div class="topbar">
-      <p class="breadcrumb">Kezdőoldal &rsaquo; Nyomtatásban &rsaquo; Olvasható &rsaquo; <span>Babilon folyói mellől</span></p>
+      <p class="breadcrumb">Kezdőoldal &rsaquo; <span>Tanári pályám emlékezete</span></p>
     </div>
     <main class="article" id="main-content">
-      <h1 class="page-title">Babilon folyói mellől a Tisza partjáig</h1>
+      <h1 class="page-title">Tanári pályám emlékezete</h1>
       <div class="title-rule"></div>
-      <p>Ez az oldal tartalma hamarosan elérhető lesz.</p>
+      <div class="album-embed">
+        <a class="album-link" href="https://photos.google.com/share/AF1QipOX7nmchB8nc9YVNkqxiYNwzWTgtWADA4_l8y9Svheg9Xd2G8jM9fm2ZBe8p5ZCvw?key=b3lXUEM5aW9pRWpLSHpqTlotNnVBUHdGT1VRUC13" target="_blank" rel="noopener">
+          <span class="album-icon">&#128247;</span>
+          <span class="album-text">Fényképalbum megnyitása<br><small>Google Fotók</small></span>
+          <span class="album-arrow">&#8599;</span>
+        </a>
+      </div>
     </main>
     <footer class="page-footer">
       <div class="footer-left">
@@ -112,13 +118,6 @@
     if (!active) return;
     var sub = active.closest('.nav-sub');
     if (sub) { sub.classList.add('open'); sub.previousElementSibling.classList.add('open'); }
-    var subsub = active.closest('.nav-subsub');
-    if (subsub) {
-      subsub.classList.add('open');
-      subsub.previousElementSibling.classList.add('open');
-      var parentSub = subsub.closest('.nav-sub');
-      if (parentSub) { parentSub.classList.add('open'); parentSub.previousElementSibling.classList.add('open'); }
-    }
   });
 </script>
 </body>

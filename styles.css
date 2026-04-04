@@ -383,6 +383,123 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
+   BIOGRAPHICAL TABLE (Voltam, lettem)
+═══════════════════════════════════════════════════ */
+.bio-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.bio-table tr {
+  border-bottom: 1px solid rgba(74, 143, 212, 0.12);
+}
+
+.bio-table tr:last-child {
+  border-bottom: none;
+}
+
+.bio-table td {
+  padding: 12px 8px;
+  font-size: 0.88rem;
+  color: var(--text-body);
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.bio-table .bio-year {
+  white-space: nowrap;
+  color: var(--blue-lt);
+  font-weight: bold;
+  padding-right: 28px;
+  min-width: 160px;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTACT TABLE (Kapcsolat)
+═══════════════════════════════════════════════════ */
+.contact-table {
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.contact-table td {
+  padding: 14px 16px;
+  font-size: 0.92rem;
+  vertical-align: middle;
+}
+
+.contact-table .contact-label {
+  color: var(--text-subtle);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-right: 32px;
+  white-space: nowrap;
+}
+
+.contact-table a {
+  color: var(--blue-lt);
+  text-decoration: none;
+}
+
+.contact-table a:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════
+   GOOGLE PHOTOS ALBUM EMBED
+═══════════════════════════════════════════════════ */
+.album-embed {
+  margin-top: 16px;
+}
+
+.album-link {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 32px;
+  background: rgba(74, 143, 212, 0.07);
+  border: 1px solid rgba(74, 143, 212, 0.25);
+  border-left: 4px solid var(--blue);
+  border-radius: 0 4px 4px 0;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.album-link:hover {
+  background: rgba(74, 143, 212, 0.14);
+  border-color: rgba(74, 143, 212, 0.5);
+}
+
+.album-icon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.album-text {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.album-text small {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: var(--text-subtle);
+  letter-spacing: 0.04em;
+}
+
+.album-arrow {
+  font-size: 1.4rem;
+  color: var(--blue-lt);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
    FOOTER
 ═══════════════════════════════════════════════════ */
 .page-footer {
