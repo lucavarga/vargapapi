@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vargapapi - Navigation Preview</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .preview-notice {
+      position: fixed;
+      top: 0;
+      left: 226px;
+      right: 0;
+      background: #2a5494;
+      color: #f0f4f8;
+      padding: 12px 48px;
+      font-size: 0.78rem;
+      border-bottom: 2px solid #4a8fd4;
+      z-index: 50;
+    }
+    .content-area {
+      padding-top: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR with NEW MENU STRUCTURE -->
+  <aside class="sidebar">
+    <div class="logo">Vargapapi</div>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" onclick="toggleMenu(this)">
+      <span>Menu</span>
+      <span class="toggle-icon">&#9660;</span>
+    </button>
+    <nav id="main-nav" aria-label="Main navigation">
+      <a href="#cv" onclick="showPage('cv')">CV – Életrajz</a>
+      <a href="#mert-ne" onclick="showPage('mert-ne')" style="padding-left: 40px; font-size: 0.72rem;">1.1 Mért ne?! Mottó</a>
+      <a href="#voltam-lettem" onclick="showPage('voltam-lettem')" style="padding-left: 40px; font-size: 0.72rem;">1.2 Voltam, lettem</a>
+      <a href="#melleny-zako" onclick="showPage('melleny-zako')" style="padding-left: 40px; font-size: 0.72rem;">1.3 Mellény, zakó, egyebek</a>
+      <a href="#mostanaban" onclick="showPage('mostanaban')" style="padding-left: 40px; font-size: 0.72rem;">1.4 Mostanában</a>
+
+      <a href="#idevalosi" onclick="showPage('idevalosi')">Idevalósi vagyok</a>
+      <a href="#kisujszallas" onclick="showPage('kisujszallas')" style="padding-left: 40px; font-size: 0.72rem;">2.1 Kisújszállás Gönczy Sándortól</a>
+      <a href="#családom" onclick="showPage('családom')" style="padding-left: 40px; font-size: 0.72rem;">2.2 Családom</a>
+      <a href="#baratai" onclick="showPage('baratai')" style="padding-left: 40px; font-size: 0.72rem;">2.3 Barátaim</a>
+
+      <a href="https://photos.google.com/share/AF1QipOX7nmchB8nc9YVNkqxiYNwzWTgtWADA4_l8y9Svheg9Xd2G8jM9fm2ZBe8p5ZCvw?key=b3lXUEM5aW9pRWpLSHpqTlotNnVBUHdGT1VRUC13" target="_blank">Tanári pályám emlékezete</a>
+
+      <a href="https://atlaszblog.blog.hu/" target="_blank">Blog Atlasz</a>
+
+      <a href="#nyomtatasban" onclick="showPage('nyomtatasban')">Nyomtatásban</a>
+      <a href="#bibliografia" onclick="showPage('bibliografia')" style="padding-left: 40px; font-size: 0.72rem;">5.1 Bibliográfia</a>
+      <a href="#olvasható" onclick="showPage('olvasható')" style="padding-left: 40px; font-size: 0.72rem;">5.2 Olvasható, hivatkozással használható</a>
+      <a href="#zsido-magyarok" onclick="showPage('zsido-magyarok')" style="padding-left: 40px; font-size: 0.72rem;">5.2.1 Zsidó magyarok Szegeden</a>
+      <a href="#katedral-karcolatok" onclick="showPage('katedral-karcolatok')" style="padding-left: 40px; font-size: 0.72rem;">5.2.2 Katedrális karcolatok</a>
+      <a href="#babilon-folyoi" onclick="showPage('babilon-folyoi')" style="padding-left: 40px; font-size: 0.72rem;">5.2.3 Babilon folyói mellől</a>
+      <a href="#os-uj-templom" onclick="showPage('os-uj-templom')" style="padding-left: 40px; font-size: 0.72rem;">5.2.4 Ős-új templom Szegeden</a>
+      <a href="#torott-ablakok" onclick="showPage('torott-ablakok')" style="padding-left: 40px; font-size: 0.72rem;">5.2.5 Törött ablakok</a>
+      <a href="#jo-szelvel" onclick="showPage('jo-szelvel')" style="padding-left: 40px; font-size: 0.72rem;">5.2.6 Jó széllel a parttalan felé</a>
+      <a href="#orok-remenyeg" onclick="showPage('orok-remenyeg')" style="padding-left: 40px; font-size: 0.72rem;">5.2.7 Az örök reménység temploma</a>
+
+      <a href="#szeretem" onclick="showPage('szeretem')">Szeretem</a>
+      <a href="#lux-antal" onclick="showPage('lux-antal')" style="padding-left: 40px; font-size: 0.72rem;">6.1 Lux Antal ajándéka</a>
+      <a href="#zeneк" onclick="showPage('zenék')" style="padding-left: 40px; font-size: 0.72rem;">6.2 Zenék</a>
+
+      <a href="#fenykepek" onclick="showPage('fenykepek')">Fényképek</a>
+      <a href="#kapcsolat" onclick="showPage('kapcsolat')">Kapcsolat</a>
+    </nav>
+  </aside>
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <div class="preview-notice">
+      ⚠️ PREVIEW MODE — Showing updated navigation structure with all menu items and centered content
+    </div>
+
+    <!-- Sample Page 1 -->
+    <div class="topbar">
+      <p class="breadcrumb">Kezdőoldal &rsaquo; <span id="breadcrumb-text">CV – Életrajz</span></p>
+    </div>
+
+    <main class="article" id="page-content">
+      <h1 class="page-title" id="page-title">CV – Életrajz</h1>
+      <div class="title-rule"></div>
+
+      <h2>Oldal felépítése</h2>
+      <p>
+        Ez az oldal több aloldalt tartalmaz, amelyek a bal oldali navigációban érhetőek el.
+        A szerkezet a következőképpen van felépítve:
+      </p>
+
+      <h2>1. CV – Életrajz szekció</h2>
+      <p>
+        Tartalmazza az alábbi aloldalakat:
+      </p>
+      <ul style="margin-left: 20px;">
+        <li>1.1 Mért ne?! Mottó</li>
+        <li>1.2 Voltam, lettem</li>
+        <li>1.3 Mellény, zakó, egyebek</li>
+        <li>1.4 Mostanában</li>
+      </ul>
+
+      <h2>Navigáció</h2>
+      <p>
+        Az összes oldal <strong>középre igazított</strong> a CSS-ben, maximum 820px szélességgel.
+        A külső linkek (Blog Atlasz, Tanári pályám) új fülön nyílnak meg.
+      </p>
+
+      <h2>Placeholder tartalom</h2>
+      <p>
+        Ezt a szöveget a tényleges tartalom fogja helyettesíteni.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
+
+      <blockquote>
+        <p>
+          Az összes oldal középre igazított, és a tartalom maximum 820px szélességre van
+          korlátozva az optimális olvashatóság érdekében.
+        </p>
+        <cite>Előnézet</cite>
+      </blockquote>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <div class="footer-left">
+        <strong>vargapapi.hu</strong>
+        All rights reserved &copy; 2026
+      </div>
+      <div class="footer-right">
+        <a href="#">Privacy Policy</a> &nbsp;&middot;&nbsp;
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+
+  </div>
+
+</div>
+
+<script>
+  function toggleMenu(btn) {
+    var nav = document.getElementById('main-nav');
+    var isOpen = nav.classList.contains('open');
+    nav.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+
+  function showPage(pageId) {
+    const titles = {
+      'cv': 'CV – Életrajz',
+      'mert-ne': '1.1 Mért ne?! Mottó',
+      'voltam-lettem': '1.2 Voltam, lettem',
+      'melleny-zako': '1.3 Mellény, zakó, egyebek',
+      'mostanaban': '1.4 Mostanában',
+      'idevalosi': 'Idevalósi vagyok',
+      'kisujszallas': '2.1 Kisújszállás Gönczy Sándortól',
+      'családom': '2.2 Családom',
+      'baratai': '2.3 Barátaim',
+      'nyomtatasban': 'Nyomtatásban',
+      'bibliografia': '5.1 Bibliográfia',
+      'olvasható': '5.2 Olvasható, hivatkozással használható',
+      'zsido-magyarok': '5.2.1 Zsidó magyarok Szegeden – Löw Lipót és Löw Immánuel',
+      'katedral-karcolatok': '5.2.2 Katedrális karcolatok – Zalka, Zaci, Hatkiló',
+      'babilon-folyoi': '5.2.3 Babilon folyói mellől a Tisza partjáig',
+      'os-uj-templom': '5.2.4 Ős-új templom Szegeden',
+      'torott-ablakok': '5.2.5 Törött ablakok, törött remények',
+      'jo-szelvel': '5.2.6 Jó széllel a parttalan felé',
+      'orok-remenyeg': '5.2.7 Az örök reménység temploma',
+      'szeretem': 'Szeretem',
+      'lux-antal': '6.1 Lux Antal ajándéka: Mindenféle 20 Computer',
+      'zenék': '6.2 Zenék',
+      'fenykepek': 'Fényképek',
+      'kapcsolat': 'Kapcsolat'
+    };
+
+    document.getElementById('page-title').textContent = titles[pageId] || 'Oldal';
+    document.getElementById('breadcrumb-text').textContent = titles[pageId] || 'Oldal';
+
+    // Scroll to top
+    document.querySelector('.article').scrollIntoView();
+  }
+</script>
+
+</body>
+</html>
