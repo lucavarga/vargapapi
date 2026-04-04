@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pelagic Studio — Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">Pelagic</div>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" onclick="toggleMenu(this)">
+      <span>Menu</span>
+      <span class="toggle-icon">&#9660;</span>
+    </button>
+    <nav id="main-nav" aria-label="Main navigation">
+      <a href="#" class="active" aria-current="page">Home</a>
+      <a href="#">About</a>
+      <a href="#">Portfolio</a>
+      <a href="#">Services</a>
+      <a href="#">Projects</a>
+      <a href="#">Team</a>
+      <a href="#">Process</a>
+      <a href="#">Clients</a>
+      <a href="#">Awards</a>
+      <a href="#">Journal</a>
+      <a href="#">Resources</a>
+      <a href="#">Press</a>
+      <a href="#">Events</a>
+      <a href="#">Careers</a>
+      <a href="#">Contact</a>
+    </nav>
+  </aside>
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <!-- Home hero — full artwork background -->
+    <main class="home-hero" id="main-content">
+      <div class="rule"></div>
+      <h1>
+        Depth in<span>every detail</span>
+      </h1>
+      <p>
+        A studio dedicated to considered work — where process is as important as outcome,
+        and every decision carries intention.
+      </p>
+      <a href="portfolio.html" class="cta">Explore the work</a>
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <div class="footer-left">
+        <strong>vargapapi.hu</strong>
+        All rights reserved &copy; 2026 &nbsp;&middot;&nbsp; Built with intention
+      </div>
+      <div class="footer-right">
+        <a href="#">Privacy Policy</a> &nbsp;&middot;&nbsp;
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+
+  </div>
+
+</div>
+
+<script>
+  function toggleMenu(btn) {
+    var nav = document.getElementById('main-nav');
+    var isOpen = nav.classList.contains('open');
+    nav.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+</script>
+
+</body>
+</html>
