@@ -141,14 +141,14 @@
       <label>Célmappa útvonal (pl. img/motto.jpg)</label>
       <input type="text" id="img-path" value="img/motto.jpg" placeholder="img/fajlnev.jpg">
       <label>Kép kiválasztása</label>
-      <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()"
+      <div class="dropzone" id="dropzone"
            ondragover="event.preventDefault();this.classList.add('drag')"
            ondragleave="this.classList.remove('drag')"
            ondrop="handleDrop(event)">
         <div class="dz-icon">📷</div>
-        <div class="dz-text">Kattints a fájl kiválasztásához<br>vagy <strong>húzd ide</strong> a képet</div>
+        <div class="dz-text">Húzd ide a képet<br>vagy használd a gombot lentebb</div>
       </div>
-      <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])">
+      <input type="file" id="file-input" accept="image/*,*/*" style="display:block; margin-top:12px; color:var(--text-subtle);" onchange="handleFile(this.files[0])">
       <img id="preview-img" alt="Előnézet">
       <br>
       <button class="btn" id="upload-btn" onclick="uploadImage()" disabled>Feltöltés GitHubra</button>
@@ -245,18 +245,18 @@
   // ── Image upload ──
   function handleFile(file) {
     if (!file) return;
+    log('Fájl kiválasztva: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)', 'inf');
     const reader = new FileReader();
+    reader.onerror = () => log('FileReader hiba: ' + reader.error, 'err');
     reader.onload = e => {
       fileData = e.target.result.split(',')[1]; // base64
       const prev = document.getElementById('preview-img');
       prev.src = e.target.result;
       prev.style.display = 'block';
       document.getElementById('upload-btn').disabled = false;
-      log('Kép betöltve: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)', 'inf');
-      // auto-set path from filename
-      const pathEl = document.getElementById('img-path');
-      if (!pathEl.value || pathEl.value === 'img/motto.jpg') pathEl.value = 'img/' + file.name;
+      log('✓ Kép betöltve, feltöltés gomb aktív.', 'ok');
     };
+    document.getElementById('upload-btn').textContent = 'Betöltés...';
     reader.readAsDataURL(file);
   }
   function handleDrop(e) {
@@ -282,7 +282,9 @@
     } catch(e) {
       log('✗ Hiba: ' + e.message, 'err');
     }
-    document.getElementById('upload-btn').disabled = false;
+    const btn = document.getElementById('upload-btn');
+    btn.disabled = false;
+    btn.textContent = 'Feltöltés GitHubra';
   }
 
   // ── Page editor ──
