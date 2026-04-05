@@ -141,8 +141,7 @@
       <label>Célfájl útvonala a repóban</label>
       <input type="text" id="img-path" value="img/motto.jpg" placeholder="img/fajlnev.jpg">
       <label>Válasszon fájlt (jpg, jpeg, png, gif, webp — bármilyen formátum)</label>
-      <input type="file" id="file-input" style="display:block; margin:8px 0 4px; color:var(--text-subtle); width:100%;">
-      <p class="hint" id="file-status">Nincs fájl kiválasztva.</p>
+      <input type="file" id="file-input" style="display:block; margin:8px 0 16px; color:var(--text-subtle); width:100%;">
       <img id="preview-img" alt="Előnézet">
       <br>
       <button class="btn" id="upload-btn" onclick="uploadImage()">Feltöltés GitHubra</button>
@@ -237,52 +236,42 @@
   }
 
   // ── Image upload ──
-  // Attach file input listener after DOM ready
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('file-input').addEventListener('change', function() {
-      const file = this.files[0];
-      if (!file) return;
-      fileData = null;
-      document.getElementById('file-status').textContent = 'Betöltés: ' + file.name + ' ...';
-      const reader = new FileReader();
-      reader.onerror = function() {
-        log('✗ FileReader hiba: ' + reader.error, 'err');
-        document.getElementById('file-status').textContent = 'Hiba a fájl olvasásakor.';
-      };
-      reader.onload = function(e) {
-        fileData = e.target.result.split(',')[1];
-        const prev = document.getElementById('preview-img');
-        prev.src = e.target.result;
-        prev.style.display = 'block';
-        document.getElementById('file-status').textContent = '✓ ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB) — kész a feltöltésre';
-        log('✓ Fájl betöltve: ' + file.name, 'ok');
-      };
+  function readFileAsBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload  = function(e) { resolve(e.target.result.split(',')[1]); };
+      reader.onerror = function()  { reject(new Error('FileReader hiba: ' + reader.error)); };
       reader.readAsDataURL(file);
     });
-  });
+  }
 
   async function uploadImage() {
-    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
-    const file = document.getElementById('file-input').files[0];
-    if (!file) { log('✗ Nincs kiválasztott fájl.', 'err'); return; }
-    if (!fileData) { log('✗ Fájl még betöltés alatt, kérjük várjon egy pillanatot.', 'err'); return; }
-    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
-    const path = document.getElementById('img-path').value.trim();
-    if (!path) { log('Adja meg a célfájl útvonalát.', 'err'); return; }
-    log('Feltöltés: ' + path + ' ...', 'inf');
-    document.getElementById('upload-btn').disabled = true;
+    if (!getToken()) { log('✗ Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    var fileInput = document.getElementById('file-input');
+    var file = fileInput.files[0];
+    if (!file) { log('✗ Nincs kiválasztott fájl — kérjük válasszon fájlt.', 'err'); return; }
+    var path = document.getElementById('img-path').value.trim();
+    if (!path) { log('✗ Adja meg a célfájl útvonalát.', 'err'); return; }
+    var btn = document.getElementById('upload-btn');
+    btn.disabled = true;
+    btn.textContent = 'Feltöltés...';
+    log('Fájl olvasása: ' + file.name + ' ...', 'inf');
     try {
-      // Check if file exists (need SHA for update)
-      let sha = null;
-      try { const existing = await ghFetch('/repos/' + REPO + '/contents/' + path); sha = existing.sha; } catch(e) {}
-      const body = { message: 'Upload image: ' + path, content: fileData };
+      var base64 = await readFileAsBase64(file);
+      log('Feltöltés GitHubra: ' + path + ' ...', 'inf');
+      var sha = null;
+      try { var existing = await ghFetch('/repos/' + REPO + '/contents/' + path); sha = existing.sha; } catch(e) {}
+      var body = { message: 'Upload image: ' + path, content: base64 };
       if (sha) body.sha = sha;
       await ghFetch('/repos/' + REPO + '/contents/' + path, 'PUT', body);
-      log('✓ Kép feltöltve: ' + path, 'ok');
+      log('✓ Sikeresen feltöltve: ' + path, 'ok');
+      // Show preview
+      var prev = document.getElementById('preview-img');
+      prev.src = 'data:image/jpeg;base64,' + base64;
+      prev.style.display = 'block';
     } catch(e) {
       log('✗ Hiba: ' + e.message, 'err');
     }
-    const btn = document.getElementById('upload-btn');
     btn.disabled = false;
     btn.textContent = 'Feltöltés GitHubra';
   }
