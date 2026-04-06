@@ -220,58 +220,81 @@ html, body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  border-right: 1px solid var(--navy-border);
 }
 
 /* ═══════════════════════════════════════════════════
-   HOME PAGE
+   HOME PAGE — showroom layout
+   Artwork fully visible, centered, lined from both sides
 ═══════════════════════════════════════════════════ */
 .home-hero {
   flex: 1;
-  background-image: url('img/background.png');
-  background-size: cover;
-  background-position: center;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 56px 64px;
-  min-height: 100vh;
+  background: var(--content-bg);
+}
+
+/* Stage: the artwork display area */
+.hero-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 72px 32px;
+  min-height: 0;
+}
+
+.hero-artwork {
+  display: block;
+  max-width: 100%;
+  max-height: 68vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Caption: title + text + CTA below the artwork */
+.hero-caption {
+  padding: 28px 72px 52px;
+  border-top: 1px solid var(--navy-border);
 }
 
 .home-hero .rule {
-  width: 48px;
+  width: 40px;
   height: 2px;
   background: var(--blue);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .home-hero h1 {
-  font-size: 2.4rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: var(--nav-active);
+  color: var(--text-primary);
   line-height: 1.25;
-  max-width: 560px;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.85);
+  max-width: 540px;
 }
 
 .home-hero h1 span {
   display: block;
-  color: var(--blue-icy);
+  color: var(--blue);
   font-weight: normal;
+  font-size: 0.85em;
+  margin-top: 4px;
 }
 
 .home-hero p {
-  margin-top: 16px;
+  margin-top: 12px;
   font-size: 0.88rem;
   line-height: 1.8;
-  color: rgba(240, 246, 252, 0.92);
+  color: var(--text-subtle);
   max-width: 480px;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
 }
 
 .home-hero .cta {
   display: inline-block;
-  margin-top: 28px;
-  padding: 12px 28px;
+  margin-top: 24px;
+  padding: 11px 28px;
   background: var(--blue);
   color: #ffffff;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -286,7 +309,7 @@ html, body {
 
 .home-hero .cta:hover {
   background: transparent;
-  color: var(--blue-icy);
+  color: var(--blue-dp);
 }
 
 .home-hero .cta:focus-visible {
@@ -636,13 +659,20 @@ html, body {
   }
 
   /* Home */
-  .home-hero {
-    padding: 36px 24px 48px;
-    min-height: calc(100vh - 56px);
+  .hero-stage {
+    padding: 32px 24px 20px;
+  }
+
+  .hero-artwork {
+    max-height: 52vh;
+  }
+
+  .hero-caption {
+    padding: 20px 24px 44px;
   }
 
   .home-hero h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   /* Interior */

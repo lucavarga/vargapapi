@@ -83,6 +83,17 @@
     .dropzone .dz-text strong { color: var(--blue-lt); }
     #preview-img { max-width: 100%; max-height: 220px; margin-top: 14px; display: none; border: 1px solid var(--navy-border); }
 
+    /* Artwork showroom preview */
+    .artwork-current-wrap {
+      background: rgba(0,0,0,0.18); border: 1px solid var(--navy-border);
+      border-radius: 3px; padding: 28px; text-align: center;
+      min-height: 140px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 4px;
+    }
+    .artwork-current-wrap img { max-width: 100%; max-height: 280px; object-fit: contain; }
+    .artwork-new-wrap { margin-top: 14px; text-align: center; }
+    .artwork-new-wrap img { max-width: 100%; max-height: 220px; object-fit: contain; display: none; border: 1px solid var(--navy-border); border-radius: 2px; }
+
     /* Page list */
     .page-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
     .page-btn {
@@ -130,6 +141,35 @@
       <p class="hint">Token létrehozása: <a href="https://github.com/settings/tokens/new?scopes=repo&description=vargapapi-admin" target="_blank">github.com/settings/tokens</a> — szükséges scope: <strong>repo</strong></p>
       <button class="btn" onclick="saveToken()">Token mentése</button>
       <button class="btn secondary" onclick="clearToken()">Törlés</button>
+    </div>
+  </div>
+
+  <!-- HOMEPAGE ARTWORK -->
+  <div class="section">
+    <div class="section-title">Nyitólap kép — img/artwork.png</div>
+    <div class="card">
+      <div class="card-title">Jelenlegi kép</div>
+      <div class="artwork-current-wrap">
+        <img src="img/artwork.png" alt="Jelenlegi artwork" id="current-artwork-preview">
+      </div>
+      <p class="hint" style="margin-top:8px;">Ez a kép jelenik meg a nyitólapon, teljes méretben, középre igazítva.</p>
+      <hr style="margin:22px 0;">
+      <div class="card-title">Kép cseréje</div>
+      <div class="dropzone" id="artwork-dz"
+           onclick="document.getElementById('artwork-file-input').click()"
+           ondragover="event.preventDefault(); this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="handleArtworkDrop(event)">
+        <div class="dz-icon">🖼</div>
+        <div class="dz-text">Húzza ide az új képet, vagy <strong>kattintson a tallózáshoz</strong></div>
+      </div>
+      <input type="file" id="artwork-file-input" accept="image/*" onchange="previewNewArtwork(this)">
+      <div class="artwork-new-wrap">
+        <img id="artwork-new-preview" alt="Előnézet">
+      </div>
+      <button class="btn" id="artwork-upload-btn" onclick="uploadArtwork()" disabled style="margin-top:18px;">
+        Feltöltés — img/artwork.png csere
+      </button>
     </div>
   </div>
 
@@ -191,9 +231,10 @@
 <script>
   const REPO = 'lucavarga/vargapapi';
   const API  = 'https://api.github.com';
-  let fileData = null;   // base64 of selected image
-  let currentFile = null; // filename being edited
-  let currentSha = null;  // sha of file being edited
+  let fileData = null;        // base64 of selected image
+  let currentFile = null;     // filename being edited
+  let currentSha = null;      // sha of file being edited
+  let artworkBase64 = null;   // base64 of pending artwork replacement
 
   // ── Token ──
   function getToken() { return localStorage.getItem('gh_token') || ''; }
@@ -339,6 +380,60 @@
     line.textContent = new Date().toLocaleTimeString('hu') + '  ' + msg;
     el.appendChild(line);
     el.scrollTop = el.scrollHeight;
+  }
+
+  // ── Homepage Artwork ──
+  function previewNewArtwork(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      artworkBase64 = e.target.result.split(',')[1];
+      var prev = document.getElementById('artwork-new-preview');
+      prev.src = e.target.result;
+      prev.style.display = 'block';
+      document.getElementById('artwork-upload-btn').disabled = false;
+      document.getElementById('artwork-dz').querySelector('.dz-text').innerHTML =
+        '<strong>' + file.name + '</strong> — feltöltésre kész';
+      log('Kép betöltve: ' + file.name, 'inf');
+    };
+    reader.readAsDataURL(file);
+  }
+  function handleArtworkDrop(e) {
+    e.preventDefault();
+    document.getElementById('artwork-dz').classList.remove('drag');
+    var file = e.dataTransfer.files[0];
+    if (!file) return;
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    var inp = document.getElementById('artwork-file-input');
+    inp.files = dt.files;
+    previewNewArtwork(inp);
+  }
+  async function uploadArtwork() {
+    if (!getToken()) { log('✗ Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    if (!artworkBase64) { log('✗ Nincs kiválasztott fájl.', 'err'); return; }
+    var btn = document.getElementById('artwork-upload-btn');
+    btn.disabled = true; btn.textContent = 'Feltöltés...';
+    log('Artwork feltöltése: img/artwork.png ...', 'inf');
+    try {
+      var sha = null;
+      try { var ex = await ghFetch('/repos/' + REPO + '/contents/img/artwork.png'); sha = ex.sha; } catch(e) {}
+      var body = { message: 'Update homepage artwork (img/artwork.png)', content: artworkBase64 };
+      if (sha) body.sha = sha;
+      await ghFetch('/repos/' + REPO + '/contents/img/artwork.png', 'PUT', body);
+      log('✓ Artwork sikeresen feltöltve! Frissítse az oldalt a változás megtekintéséhez.', 'ok');
+      // Swap the "current" preview to the newly uploaded image
+      var newSrc = document.getElementById('artwork-new-preview').src;
+      document.getElementById('current-artwork-preview').src = newSrc;
+      document.getElementById('artwork-new-preview').style.display = 'none';
+      artworkBase64 = null;
+      document.getElementById('artwork-dz').querySelector('.dz-text').innerHTML =
+        'Húzza ide az új képet, vagy <strong>kattintson a tallózáshoz</strong>';
+    } catch(e) {
+      log('✗ Hiba: ' + e.message, 'err');
+    }
+    btn.disabled = false; btn.textContent = 'Feltöltés — img/artwork.png csere';
   }
 
   // Init
