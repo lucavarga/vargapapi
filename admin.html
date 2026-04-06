@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vargapapi — Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #4a8fd4; --blue-lt: #8ab8dc; --blue-icy: #c2d9ee;
+      --navy: #060a18; --navy-border: rgba(74,143,212,0.22);
+      --content-bg: #08101e; --text-primary: #f0f4f8;
+      --text-body: #d4e4f0; --text-subtle: #a8c8e0;
+      --green: #4ad48f; --red: #d44a4a; --yellow: #d4c44a;
+    }
+    html, body { height: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; background: var(--content-bg); color: var(--text-body); line-height: 1.6; }
+
+    /* Header */
+    .admin-header {
+      background: var(--navy); border-bottom: 3px solid var(--blue);
+      padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .admin-header .logo { font-size: 0.75rem; font-weight: bold; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-primary); text-decoration: none; }
+    .admin-header .badge { font-size: 0.65rem; background: var(--blue); color: #fff; padding: 3px 10px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; }
+    #auth-status { font-size: 0.72rem; }
+    #auth-status.ok { color: var(--green); }
+    #auth-status.fail { color: var(--red); }
+
+    /* Layout */
+    .admin-body { max-width: 900px; margin: 0 auto; padding: 40px 32px 80px; }
+
+    /* Sections */
+    .section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 0.72rem; font-weight: bold; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--blue-lt); margin-bottom: 20px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--navy-border);
+    }
+
+    /* Card */
+    .card {
+      background: rgba(74,143,212,0.05); border: 1px solid var(--navy-border);
+      border-left: 3px solid var(--blue); padding: 24px 28px; margin-bottom: 16px; border-radius: 0 4px 4px 0;
+    }
+    .card-title { font-size: 0.82rem; font-weight: bold; color: var(--text-primary); margin-bottom: 14px; }
+
+    /* Inputs */
+    label { display: block; font-size: 0.72rem; color: var(--text-subtle); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; margin-top: 14px; }
+    label:first-child { margin-top: 0; }
+    input[type="text"], input[type="password"], textarea, select {
+      width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.3);
+      border: 1px solid var(--navy-border); color: var(--text-primary);
+      font-family: Verdana, sans-serif; font-size: 0.82rem; border-radius: 2px; outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--blue); }
+    textarea { min-height: 180px; resize: vertical; }
+    input[type="file"] { display: none; }
+
+    /* Buttons */
+    .btn {
+      display: inline-block; padding: 10px 22px; font-family: Verdana, sans-serif;
+      font-size: 0.75rem; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase;
+      border: 2px solid var(--blue); background: var(--blue); color: #fff;
+      cursor: pointer; border-radius: 2px; transition: background 0.15s, color 0.15s; margin-top: 16px;
+    }
+    .btn:hover { background: transparent; color: var(--blue-icy); }
+    .btn.secondary { background: transparent; color: var(--blue-lt); border-color: rgba(74,143,212,0.4); }
+    .btn.secondary:hover { border-color: var(--blue); color: var(--text-primary); }
+    .btn.danger { border-color: var(--red); background: var(--red); color: #fff; }
+    .btn.danger:hover { background: transparent; color: var(--red); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* File drop zone */
+    .dropzone {
+      border: 2px dashed rgba(74,143,212,0.35); border-radius: 4px;
+      padding: 36px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dropzone:hover, .dropzone.drag { border-color: var(--blue); background: rgba(74,143,212,0.07); }
+    .dropzone .dz-icon { font-size: 2rem; margin-bottom: 10px; }
+    .dropzone .dz-text { font-size: 0.80rem; color: var(--text-subtle); }
+    .dropzone .dz-text strong { color: var(--blue-lt); }
+    #preview-img { max-width: 100%; max-height: 220px; margin-top: 14px; display: none; border: 1px solid var(--navy-border); }
+
+    /* Page list */
+    .page-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .page-btn {
+      padding: 10px 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--navy-border);
+      color: var(--text-subtle); font-size: 0.75rem; cursor: pointer; text-align: left;
+      border-radius: 2px; transition: all 0.15s;
+    }
+    .page-btn:hover { border-color: var(--blue); color: var(--text-primary); background: rgba(74,143,212,0.07); }
+    .page-btn.selected { border-color: var(--blue); color: var(--text-primary); background: rgba(74,143,212,0.12); font-weight: bold; }
+
+    /* Log */
+    #log {
+      background: rgba(0,0,0,0.4); border: 1px solid var(--navy-border); border-radius: 2px;
+      padding: 14px 18px; font-size: 0.72rem; font-family: monospace; min-height: 60px;
+      max-height: 180px; overflow-y: auto; color: var(--text-subtle);
+    }
+    #log .ok  { color: var(--green); }
+    #log .err { color: var(--red); }
+    #log .inf { color: var(--blue-lt); }
+
+    /* Token hint */
+    .hint { font-size: 0.70rem; color: var(--text-subtle); margin-top: 6px; }
+    .hint a { color: var(--blue-lt); }
+
+    hr { border: none; border-top: 1px solid var(--navy-border); margin: 32px 0; }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <a class="logo" href="index.html">Vargapapi</a>
+  <span class="badge">Admin</span>
+  <span id="auth-status">● nem hitelesített</span>
+</header>
+
+<div class="admin-body">
+
+  <!-- 1. AUTHENTICATION -->
+  <div class="section">
+    <div class="section-title">1. GitHub hitelesítés</div>
+    <div class="card">
+      <div class="card-title">Personal Access Token</div>
+      <label>GitHub Token (repo scope szükséges)</label>
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <p class="hint">Token létrehozása: <a href="https://github.com/settings/tokens/new?scopes=repo&description=vargapapi-admin" target="_blank">github.com/settings/tokens</a> — szükséges scope: <strong>repo</strong></p>
+      <button class="btn" onclick="saveToken()">Token mentése</button>
+      <button class="btn secondary" onclick="clearToken()">Törlés</button>
+    </div>
+  </div>
+
+  <!-- 2. IMAGE UPLOAD -->
+  <div class="section">
+    <div class="section-title">2. Képfeltöltés</div>
+    <div class="card">
+      <div class="card-title">Kép feltöltése az img/ mappába</div>
+      <label>Célfájl útvonala a repóban</label>
+      <input type="text" id="img-path" value="img/motto.jpg" placeholder="img/fajlnev.jpg">
+      <label>Válasszon fájlt (jpg, jpeg, png, gif, webp — bármilyen formátum)</label>
+      <input type="file" id="file-input" style="display:block; margin:8px 0 16px; color:var(--text-subtle); width:100%;">
+      <img id="preview-img" alt="Előnézet">
+      <br>
+      <button class="btn" id="upload-btn" onclick="uploadImage()">Feltöltés GitHubra</button>
+    </div>
+  </div>
+
+  <!-- 3. PAGE CONTENT EDITOR -->
+  <div class="section">
+    <div class="section-title">3. Oldaltartalom szerkesztése</div>
+    <div class="card">
+      <div class="card-title">Válasszon oldalt</div>
+      <div class="page-grid">
+        <button class="page-btn" onclick="selectPage('cv-mert-ne.html','Mért ne?! Mottó')">1.1 Mért ne?! Mottó</button>
+        <button class="page-btn" onclick="selectPage('cv-voltam-lettem.html','Voltam, lettem')">1.2 Voltam, lettem</button>
+        <button class="page-btn" onclick="selectPage('cv-melleny-zako.html','Mellény, zakó, egyebek')">1.3 Mellény, zakó, egyebek</button>
+        <button class="page-btn" onclick="selectPage('cv-mostanaban.html','Mostanában')">1.4 Mostanában</button>
+        <button class="page-btn" onclick="selectPage('idevalosi-kisujszallas.html','Kisújszállás')">2.1 Kisújszállás</button>
+        <button class="page-btn" onclick="selectPage('idevalosi-csaladom.html','Családom')">2.2 Családom</button>
+        <button class="page-btn" onclick="selectPage('idevalosi-barataim.html','Barátaim')">2.3 Barátaim</button>
+        <button class="page-btn" onclick="selectPage('nyomtatasban-bibliografia.html','Bibliográfia')">5.1 Bibliográfia</button>
+        <button class="page-btn" onclick="selectPage('szeretem-lux-antal.html','Lux Antal ajándéka')">6.1 Lux Antal ajándéka</button>
+        <button class="page-btn" onclick="selectPage('szeretem-zenek.html','Zenék')">6.2 Zenék</button>
+        <button class="page-btn" onclick="selectPage('fenykepek.html','Fényképek')">Fényképek</button>
+        <button class="page-btn" onclick="selectPage('kapcsolat.html','Kapcsolat')">Kapcsolat</button>
+      </div>
+
+      <div id="editor-area" style="display:none;">
+        <hr>
+        <div class="card-title" id="editor-title"></div>
+        <label>Az oldal <code>&lt;main class="article"&gt;</code> tartalmának HTML-je</label>
+        <textarea id="page-content" spellcheck="false"></textarea>
+        <p class="hint">Szerkesztheti a HTML tartalmat. A navigáció és a lábléc automatikusan megmarad.</p>
+        <button class="btn" id="save-btn" onclick="savePage()">Mentés GitHubra</button>
+        <button class="btn secondary" onclick="closeEditor()">Mégse</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. YOUTUBE VIDEO MANAGER -->
+  <div class="section">
+    <div class="section-title">4. Zenék – YouTube videók</div>
+    <div class="card">
+      <div class="card-title">Videó hozzáadása</div>
+      <label>YouTube URL (bármilyen formátum)</label>
+      <input type="text" id="yt-url" placeholder="https://www.youtube.com/watch?v=... vagy https://youtu.be/...">
+      <label>Cím (opcionális)</label>
+      <input type="text" id="yt-title" placeholder="pl. Bach: h-moll misé">
+      <button class="btn" onclick="addVideo()">Videó hozzáadása</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Aktuális videólista</div>
+      <div id="video-list-admin" style="min-height:40px; color:var(--text-subtle); font-size:0.80rem;">Betöltés...</div>
+      <button class="btn secondary" style="margin-top:16px;" onclick="loadVideos()">Lista frissítése</button>
+    </div>
+  </div>
+
+  <!-- 5. LOG -->
+  <div class="section">
+    <div class="section-title">Napló</div>
+    <div id="log"><span class="inf">Várakozás műveletre...</span></div>
+  </div>
+
+</div>
+
+<script>
+  const REPO = 'lucavarga/vargapapi';
+  const API  = 'https://api.github.com';
+  let fileData = null;   // base64 of selected image
+  let currentFile = null; // filename being edited
+  let currentSha = null;  // sha of file being edited
+
+  // ── Token ──
+  function getToken() { return localStorage.getItem('gh_token') || ''; }
+  function saveToken() {
+    const t = document.getElementById('gh-token').value.trim();
+    if (!t) { log('Kérjük adja meg a tokent.', 'err'); return; }
+    localStorage.setItem('gh_token', t);
+    log('Token elmentve.', 'ok');
+    verifyToken();
+  }
+  function clearToken() {
+    localStorage.removeItem('gh_token');
+    document.getElementById('gh-token').value = '';
+    setAuthStatus(false);
+    log('Token törölve.', 'inf');
+  }
+  function setAuthStatus(ok, user) {
+    const el = document.getElementById('auth-status');
+    el.className = ok ? 'ok' : 'fail';
+    el.textContent = ok ? '● ' + user : '● nem hitelesített';
+  }
+  async function verifyToken() {
+    const token = getToken();
+    if (!token) return;
+    document.getElementById('gh-token').value = token;
+    try {
+      const r = await ghFetch('/user');
+      if (r.login) { setAuthStatus(true, r.login); log('Hitelesítve: ' + r.login, 'ok'); }
+      else { setAuthStatus(false); log('Érvénytelen token.', 'err'); }
+    } catch(e) { setAuthStatus(false); log('Hitelesítési hiba: ' + e.message, 'err'); }
+  }
+
+  // ── GitHub API ──
+  async function ghFetch(path, method='GET', body=null) {
+    const opts = { method, headers: { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github+json' } };
+    if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    const r = await fetch(API + path, opts);
+    if (!r.ok) { const e = await r.json(); throw new Error(e.message || r.status); }
+    return r.json();
+  }
+
+  // ── Image upload ──
+  function readFileAsBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload  = function(e) { resolve(e.target.result.split(',')[1]); };
+      reader.onerror = function()  { reject(new Error('FileReader hiba: ' + reader.error)); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadImage() {
+    if (!getToken()) { log('✗ Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    var fileInput = document.getElementById('file-input');
+    var file = fileInput.files[0];
+    if (!file) { log('✗ Nincs kiválasztott fájl — kérjük válasszon fájlt.', 'err'); return; }
+    var path = document.getElementById('img-path').value.trim();
+    if (!path) { log('✗ Adja meg a célfájl útvonalát.', 'err'); return; }
+    var btn = document.getElementById('upload-btn');
+    btn.disabled = true;
+    btn.textContent = 'Feltöltés...';
+    log('Fájl olvasása: ' + file.name + ' ...', 'inf');
+    try {
+      var base64 = await readFileAsBase64(file);
+      log('Feltöltés GitHubra: ' + path + ' ...', 'inf');
+      var sha = null;
+      try { var existing = await ghFetch('/repos/' + REPO + '/contents/' + path); sha = existing.sha; } catch(e) {}
+      var body = { message: 'Upload image: ' + path, content: base64 };
+      if (sha) body.sha = sha;
+      await ghFetch('/repos/' + REPO + '/contents/' + path, 'PUT', body);
+      log('✓ Sikeresen feltöltve: ' + path, 'ok');
+      // Show preview
+      var prev = document.getElementById('preview-img');
+      prev.src = 'data:image/jpeg;base64,' + base64;
+      prev.style.display = 'block';
+    } catch(e) {
+      log('✗ Hiba: ' + e.message, 'err');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Feltöltés GitHubra';
+  }
+
+  // ── Page editor ──
+  async function selectPage(filename, title) {
+    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+    log('Oldal betöltése: ' + filename + ' ...', 'inf');
+    try {
+      const data = await ghFetch('/repos/' + REPO + '/contents/' + filename);
+      currentSha  = data.sha;
+      currentFile = filename;
+      const html  = atob(data.content.replace(/\n/g,''));
+      // Extract content inside <main class="article"...>...</main>
+      const match = html.match(/<main[^>]*class="article"[^>]*>([\s\S]*?)<\/main>/);
+      const content = match ? match[1].trim() : '<!-- tartalom nem található -->';
+      document.getElementById('editor-title').textContent = title + ' — ' + filename;
+      document.getElementById('page-content').value = content;
+      document.getElementById('editor-area').style.display = 'block';
+      log('✓ Betöltve: ' + filename, 'ok');
+    } catch(e) {
+      log('✗ Betöltési hiba: ' + e.message, 'err');
+    }
+  }
+  function closeEditor() {
+    document.getElementById('editor-area').style.display = 'none';
+    document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('selected'));
+    currentFile = null; currentSha = null;
+  }
+  async function savePage() {
+    if (!currentFile || !currentSha) { log('Nincs kiválasztott oldal.', 'err'); return; }
+    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    log('Mentés: ' + currentFile + ' ...', 'inf');
+    document.getElementById('save-btn').disabled = true;
+    try {
+      // Fetch full file, replace content inside <main>
+      const data   = await ghFetch('/repos/' + REPO + '/contents/' + currentFile);
+      const oldHtml = atob(data.content.replace(/\n/g,''));
+      const newContent = document.getElementById('page-content').value;
+      const newHtml = oldHtml.replace(
+        /(<main[^>]*class="article"[^>]*>)([\s\S]*?)(<\/main>)/,
+        '$1\n      ' + newContent + '\n    $3'
+      );
+      const encoded = btoa(unescape(encodeURIComponent(newHtml)));
+      await ghFetch('/repos/' + REPO + '/contents/' + currentFile, 'PUT', {
+        message: 'Update content: ' + currentFile,
+        content: encoded,
+        sha: data.sha
+      });
+      log('✓ Mentve: ' + currentFile, 'ok');
+      currentSha = (await ghFetch('/repos/' + REPO + '/contents/' + currentFile)).sha;
+    } catch(e) {
+      log('✗ Hiba: ' + e.message, 'err');
+    }
+    document.getElementById('save-btn').disabled = false;
+  }
+
+  // ── Log ──
+  function log(msg, type='inf') {
+    const el = document.getElementById('log');
+    const line = document.createElement('div');
+    line.className = type;
+    line.textContent = new Date().toLocaleTimeString('hu') + '  ' + msg;
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  // ── YouTube video manager ──
+  const ZENEK_PATH = 'data/zenek.json';
+  let zenekSha = null;
+  let zenekVideos = [];
+
+  function parseYouTubeId(url) {
+    url = url.trim();
+    var m;
+    // youtu.be/ID
+    m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    // watch?v=ID
+    m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    // embed/ID
+    m = url.match(/embed\/([A-Za-z0-9_-]{11})/);
+    if (m) return m[1];
+    // plain 11-char ID
+    m = url.match(/^([A-Za-z0-9_-]{11})$/);
+    if (m) return m[1];
+    return null;
+  }
+
+  async function loadVideos() {
+    try {
+      const data = await ghFetch('/repos/' + REPO + '/contents/' + ZENEK_PATH);
+      zenekSha = data.sha;
+      zenekVideos = JSON.parse(atob(data.content.replace(/\n/g, ''))).videos || [];
+      renderVideoList();
+      log('✓ Videólista betöltve (' + zenekVideos.length + ' videó)', 'ok');
+    } catch(e) {
+      log('✗ Videólista betöltési hiba: ' + e.message, 'err');
+      document.getElementById('video-list-admin').textContent = 'Nem sikerült betölteni.';
+    }
+  }
+
+  function renderVideoList() {
+    var el = document.getElementById('video-list-admin');
+    if (zenekVideos.length === 0) {
+      el.textContent = 'Még nincsenek videók.';
+      return;
+    }
+    el.innerHTML = zenekVideos.map(function(v, i) {
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--navy-border);">'
+        + '<span style="color:var(--text-subtle);font-size:0.75rem;min-width:24px;">' + (i+1) + '.</span>'
+        + '<div style="flex:1;">'
+        + '<div style="color:var(--text-primary);font-size:0.82rem;">' + (v.title ? escHtml(v.title) : '<em style="color:var(--text-subtle)">cím nélkül</em>') + '</div>'
+        + '<div style="color:var(--text-subtle);font-size:0.72rem;margin-top:2px;">ID: ' + escHtml(v.id) + '</div>'
+        + '</div>'
+        + '<button class="btn danger" style="padding:6px 14px;margin-top:0;font-size:0.68rem;" onclick="deleteVideo(' + i + ')">Törlés</button>'
+        + '</div>';
+    }).join('');
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function saveVideos(msg) {
+    var json = JSON.stringify({ videos: zenekVideos }, null, 2);
+    var encoded = btoa(unescape(encodeURIComponent(json)));
+    var body = { message: msg, content: encoded };
+    if (zenekSha) body.sha = zenekSha;
+    var result = await ghFetch('/repos/' + REPO + '/contents/' + ZENEK_PATH, 'PUT', body);
+    zenekSha = result.content.sha;
+  }
+
+  async function addVideo() {
+    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    var url = document.getElementById('yt-url').value.trim();
+    var title = document.getElementById('yt-title').value.trim();
+    if (!url) { log('✗ Adja meg a YouTube URL-t.', 'err'); return; }
+    var id = parseYouTubeId(url);
+    if (!id) { log('✗ Nem sikerült YouTube videó ID-t kiolvasni az URL-ből.', 'err'); return; }
+    if (zenekVideos.some(function(v) { return v.id === id; })) {
+      log('✗ Ez a videó már szerepel a listán (ID: ' + id + ').', 'err'); return;
+    }
+    // Make sure we have latest sha
+    if (!zenekSha) await loadVideos();
+    var entry = { id: id };
+    if (title) entry.title = title;
+    zenekVideos.push(entry);
+    try {
+      await saveVideos('Add video: ' + id);
+      renderVideoList();
+      document.getElementById('yt-url').value = '';
+      document.getElementById('yt-title').value = '';
+      log('✓ Videó hozzáadva: ' + id + (title ? ' — ' + title : ''), 'ok');
+    } catch(e) {
+      zenekVideos.pop();
+      log('✗ Mentési hiba: ' + e.message, 'err');
+    }
+  }
+
+  async function deleteVideo(index) {
+    if (!getToken()) { log('Kérjük először adja meg a GitHub tokent.', 'err'); return; }
+    var removed = zenekVideos.splice(index, 1)[0];
+    try {
+      await saveVideos('Remove video: ' + removed.id);
+      renderVideoList();
+      log('✓ Videó törölve: ' + removed.id, 'ok');
+    } catch(e) {
+      zenekVideos.splice(index, 0, removed);
+      log('✗ Törlési hiba: ' + e.message, 'err');
+    }
+  }
+
+  // Init
+  window.addEventListener('DOMContentLoaded', function() { verifyToken(); loadVideos(); });
+</script>
+</body>
+</html>
